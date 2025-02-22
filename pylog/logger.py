@@ -62,7 +62,7 @@ class Logger:
         )
         return formatted_message
         
-    def change(self, *, output: typing.TextIO | typing.BinaryIO = None, level: Levels = None, format: str = None, rotation: AcceptableRotations = None) -> None:
+    def change(self, *, output: typing.TextIO | typing.BinaryIO | None = None, level: Levels | None = None, format: str | None = None, rotation: AcceptableRotations | None = None) -> None:
         """
         Changes the output, log level, format, and rotation of the Logger.
 
@@ -127,12 +127,16 @@ class Logger:
         """
         formatted_message = self.format_log_message(context, message)
         if isinstance(self._options[0], typing.IO) or self._options[0] == sys.stdout:
-            self._options[0].write(formatted_message + '\n')  
-            self._options[0].flush()
+            if isinstance(self._options[0], typing.IO):
+                self._options[0].write(formatted_message + '\n')  
+                self._options[0].flush()
+            elif callable(self._options[0]):
+                self._options[0](formatted_message + '\n')
         else:
             raise TypeError("Output must be a file object, sys.stdout, or a callable.")
+        
 class Context:
-    def __init__(self, message: str, level: Levels, timestamp: datetime, function: str, file: str, line: int, thread_id: int, exception: typing.Optional[Exception] = None):
+    def __init__(self, message: str, level: Levels, timestamp: datetime, function: typing.Optional[str] = None, file: typing.Optional[str] = None, line: typing.Optional[int] = None, thread_id: typing.Optional[int] = None, exception: typing.Optional[Exception] = None):
         """
         Initializes the Context with the provided information about the log message.
 
