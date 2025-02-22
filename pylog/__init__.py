@@ -1,4 +1,5 @@
 import glob
+import pylog.logger as lg
 
 __all__ = []
 for f in glob.glob('*.py'):
@@ -7,4 +8,4 @@ for f in glob.glob('*.py'):
         file_name_without_extension = file_name.split('.')[0]
         __all__.append(file_name_without_extension)
 
-
+logger = lg.Logger()
