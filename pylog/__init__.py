@@ -1,5 +1,7 @@
 import glob
 import pylog.logger as lg
+import pylog.error_handling
+import sys
 
 __all__ = []
 for f in glob.glob('*.py'):
@@ -9,3 +11,4 @@ for f in glob.glob('*.py'):
         __all__.append(file_name_without_extension)
 
 logger = lg.Logger()
+# sys.exceptionhook = pylog.error_handling.handle_exception

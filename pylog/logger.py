@@ -3,9 +3,10 @@ from pylog._enums import Levels
 from datetime import datetime, date
 from pathlib import Path
 import sys
+from pylogstyles import Colors, TextStyles
 
-type AcceptableRotations = typing.Union[str, int, date, typing.Callable[[datetime], bool]]
-type AcceptableOutput = typing.Union[typing.IO[typing.Any], str, Path, typing.Callable[[str], None], typing.Coroutine[typing.Any, typing.Any, typing.Any]]
+AcceptableRotations = typing.Union[str, int, date, typing.Callable[[datetime], bool]]
+AcceptableOutput = typing.Union[typing.IO[typing.Any], str, Path, typing.Callable[[str], None], typing.Coroutine[typing.Any, typing.Any, typing.Any]]
 
 class Logger:
     """A central hub for routing log messages to various handlers.
@@ -48,10 +49,24 @@ class Logger:
 
         :param context: The context of the log message.
         :param message: The log message itself.
-        :return: The formatted log message.
+        :return: The formatted log message with styles applied.
         """
         
-        formatted_message = self._options[2].format(
+        format_with_colors = self._options[2] if self._options[0] is not sys.stdout else self.format_colors(self._options[2])
+        
+        
+        for color in Colors:
+            format_with_colors = format_with_colors.replace(f"<{color.name}>", "")
+            format_with_colors = format_with_colors.replace(f"<{color.name.lower()}>", "")
+            format_with_colors = format_with_colors.replace(f"<{color.name.capitalize()}>", "")
+            
+        for style in TextStyles:
+            format_with_colors = format_with_colors.replace(f"<{style.name}>", "")
+            format_with_colors = format_with_colors.replace(f"<{style.name.lower()}>", "")
+            format_with_colors = format_with_colors.replace(f"<{style.name.capitalize()}>", "")
+
+        # Ensure the format string is correctly processed
+        formatted_message = format_with_colors.format(
             timestamp=context.timestamp if context.timestamp is not None else '',
             level=context.level.name if context.level is not None else '',
             message=context.message if context.message is not None else '',
@@ -60,7 +75,17 @@ class Logger:
             line=context.line if context.line is not None else '',
             thread=context.thread_id if context.thread_id is not None else ''
         )
+        
         return formatted_message
+    
+    def format_colors(self, format: str) -> str:
+        for color in Colors:
+            format = format.replace(f"<{color.name}>", color.value).replace(f"<{color.name.lower()}>", color.value).replace(f"<{color.name.capitalize()}>", color.value)
+
+        for style in TextStyles:
+            format = format.replace(f"<{style.name}>", style.value).replace(f"<{style.name.lower()}>", style.value).replace(f"<{style.name.capitalize()}>", style.value)
+        
+        return format
         
     def change(self, *, output: typing.TextIO | typing.BinaryIO | None = None, level: Levels | None = None, format: str | None = None, rotation: AcceptableRotations | None = None) -> None:
         """
@@ -77,45 +102,75 @@ class Logger:
         else:
             self._options = (self._options[0], level or self._options[1], format or self._options[2], rotation or self._options[3])
         
-    def debug(self, message: str) -> None:
+    def debug(self, message: str, exception: typing.Optional[Exception] = None, function: typing.Optional[str] = None, file: typing.Optional[str] = None, line: typing.Optional[int] = None, thread_id: typing.Optional[int] = None) -> None:
         """
         Logs a message at the DEBUG level.
 
         :param message: The log message itself.
+        :param exception: The exception to be logged, if any.
+        :param function: The name of the function where the log message was generated.
+        :param file: The file path where the log message was generated.
+        :param line: The line number in the file where the log message was generated.
+        :param thread_id: The ID of the thread that generated the log message.
         """
-        self._write_log(message, Context(message, Levels.DEBUG, datetime.now(), None, None, None, None, None), Levels.DEBUG)
+        context = Context(message, Levels.DEBUG, datetime.now(), function, file, line, thread_id, exception)
+        self._write_log(message, context, Levels.DEBUG)
 
-    def info(self, message: str) -> None:
+    def info(self, message: str, exception: typing.Optional[Exception] = None, function: typing.Optional[str] = None, file: typing.Optional[str] = None, line: typing.Optional[int] = None, thread_id: typing.Optional[int] = None) -> None:
         """
         Logs a message at the INFO level.
 
         :param message: The log message itself.
+        :param exception: The exception to be logged, if any.
+        :param function: The name of the function where the log message was generated.
+        :param file: The file path where the log message was generated.
+        :param line: The line number in the file where the log message was generated.
+        :param thread_id: The ID of the thread that generated the log message.
         """
-        self._write_log(message, Context(message, Levels.INFO, datetime.now(), None, None, None, None, None), Levels.INFO)
+        context = Context(message, Levels.INFO, datetime.now(), function, file, line, thread_id, exception)
+        self._write_log(message, context, Levels.INFO)
 
-    def warning(self, message: str) -> None:
+    def warning(self, message: str, exception: typing.Optional[Exception] = None, function: typing.Optional[str] = None, file: typing.Optional[str] = None, line: typing.Optional[int] = None, thread_id: typing.Optional[int] = None) -> None:
         """
         Logs a message at the WARNING level.
 
         :param message: The log message itself.
+        :param exception: The exception to be logged, if any.
+        :param function: The name of the function where the log message was generated.
+        :param file: The file path where the log message was generated.
+        :param line: The line number in the file where the log message was generated.
+        :param thread_id: The ID of the thread that generated the log message.
         """
-        self._write_log(message, Context(message, Levels.WARNING, datetime.now(), None, None, None, None, None), Levels.WARNING)
+        context = Context(message, Levels.WARNING, datetime.now(), function, file, line, thread_id, exception)
+        self._write_log(message, context, Levels.WARNING)
 
-    def error(self, message: str) -> None:
+    def error(self, message: str, exception: typing.Optional[Exception] = None, function: typing.Optional[str] = None, file: typing.Optional[str] = None, line: typing.Optional[int] = None, thread_id: typing.Optional[int] = None) -> None:
         """
         Logs a message at the ERROR level.
 
         :param message: The log message itself.
+        :param exception: The exception to be logged, if any.
+        :param function: The name of the function where the log message was generated.
+        :param file: The file path where the log message was generated.
+        :param line: The line number in the file where the log message was generated.
+        :param thread_id: The ID of the thread that generated the log message.
         """
-        self._write_log(message, Context(message, Levels.ERROR, datetime.now(), None, None, None, None, None), Levels.ERROR)
+        context = Context(message, Levels.ERROR, datetime.now(), function, file, line, thread_id, exception)
+        self._write_log(message, context, Levels.ERROR)
 
-    def critical(self, message: str) -> None:
+    def critical(self, message: str, exception: typing.Optional[Exception] = None, function: typing.Optional[str] = None, file: typing.Optional[str] = None, line: typing.Optional[int] = None, thread_id: typing.Optional[int] = None) -> None:
         """
         Logs a message at the CRITICAL level.
 
         :param message: The log message itself.
+        :param exception: The exception to be logged, if any.
+        :param function: The name of the function where the log message was generated.
+        :param file: The file path where the log message was generated.
+        :param line: The line number in the file where the log message was generated.
+        :param thread_id: The ID of the thread that generated the log message.
         """
-        self._write_log(message, Context(message, Levels.CRITICAL, datetime.now(), None, None, None, None, None), Levels.CRITICAL)
+        context = Context(message, Levels.CRITICAL, datetime.now(), function, file, line, thread_id, exception)
+        self._write_log(message, context, Levels.CRITICAL)
 
     def _write_log(self, message: str, context: 'Context', level: Levels) -> None:
         """
@@ -123,17 +178,11 @@ class Logger:
 
         :param message: The log message itself.
         :param context: The context of the log message.
-        :param level: The level of the log message.
+        :param lev el: The level of the log message.
         """
         formatted_message = self.format_log_message(context, message)
-        if isinstance(self._options[0], typing.IO) or self._options[0] == sys.stdout:
-            if isinstance(self._options[0], typing.IO):
-                self._options[0].write(formatted_message + '\n')  
-                self._options[0].flush()
-            elif callable(self._options[0]):
-                self._options[0](formatted_message + '\n')
-        else:
-            raise TypeError("Output must be a file object, sys.stdout, or a callable.")
+        self._options[0].write(formatted_message + '\n')  
+        self._options[0].flush()
         
 class Context:
     def __init__(self, message: str, level: Levels, timestamp: datetime, function: typing.Optional[str] = None, file: typing.Optional[str] = None, line: typing.Optional[int] = None, thread_id: typing.Optional[int] = None, exception: typing.Optional[Exception] = None):
