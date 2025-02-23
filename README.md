@@ -6,7 +6,7 @@
 </a>
 <h3 align="center">PyLog</h3>
 <p align="center">
-Get rid of the <code><a href="https://logging.apache.org/log4j/2.x/index.html">log4j</a></code> based logging moudle, become a better debugger.
+Get rid of the <code><a href="https://logging.apache.org/log4j/2.x/index.html">log4j</a></code> based logging module, become a better debugger.
 <br/>
 <br/>
 <a href="https://github.com/brodycritchlow/PyLog"><strong>Explore the docs »</strong></a>
