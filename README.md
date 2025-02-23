@@ -56,7 +56,7 @@ Once you have Python and Pip installed, you can install the `pylog` module using
 ```sh
 python3 -m venv myenv
 source myenv/bin/activate
-pip install pylog
+pip install pythonlog
 ```
 
 After installation, you can use `pylog` in your Python projects.
