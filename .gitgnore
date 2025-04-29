@@ -1,3 +1,39 @@
+# Python-related files
 __pycache__/
-*/__pycache__/
-.mypy_cache/
+*.py[cod]
+*.pyo
+*.pyd
+*.env
+*.venv
+*.virtualenv
+*.idea/
+*.vscode/
+*.DS_Store
+
+# PyPI packaging files (removed)
+# dist/
+# build/
+# *.egg-info/
+
+# Logs and temporary files
+*.log
+*.tmp
+*.swp
+*.swo
+
+# Test coverage and reports
+htmlcov/
+.coverage
+*.cover
+*.py,cover
+.cache
+nosetests.xml
+coverage.xml
+*.coveragerc
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Environment variables
+.env
+.env.*

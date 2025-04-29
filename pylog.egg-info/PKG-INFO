@@ -1,6 +1,24 @@
+Metadata-Version: 2.2
+Name: pylog
+Version: 0.1.0
+Summary: A lightweight and customizable logging library with support for colored output and advanced formatting.
+Author-email: Brody Critchlow <brodycritchlow@gmail.com>
+License: MIT
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+Requires-Dist: typing-extensions>=4.0.0
+Provides-Extra: dev
+Requires-Dist: pytest>=7.0; extra == "dev"
+Requires-Dist: mypy>=1.0; extra == "dev"
+Requires-Dist: flake8>=6.0; extra == "dev"
+
 
 <br/>
 <div align="center">
+<a href="https://github.com/ShaanCoding/ReadME-Generator">
 <img src="pylog_logo.png" alt="Logo" width="80" height="80">
 </a>
 <h3 align="center">PyLog</h3>
@@ -65,25 +83,94 @@ After installation, you can use `pylog` in your Python projects.
 Here is a quick snippet of how to use PyLog, it really is that simple:
 
 ```python
-from pylog import logger
-from pylog._enums import Levels
+import pylog
 
-# Configure the logger with a custom format and output
-logger.change(
-    output="app.log",  # Log output to a file named "app.log"
-    level=Levels.INFO,  # Set the logging level to INFO
-    format="<green>{timestamp}<reset> - <blue>{level}<reset>: {message}"  # Define a log format with colors
-)
+pylog.setup(file="app.log", json_format=True) # This sets up our logger to output to a file, with this formatting:  {"level": "INFO", ...}
+pylog.debug("Some debug statement within our code") # No requirement for logging.getlogger(...) or similar.
 
-# Log messages at different levels
-logger.debug("This is a DEBUG message.")  # This won't appear because the level is set to INFO
-logger.info("This is an INFO message.")  # This will appear
-logger.warning("This is a WARNING message.")  # This will appear
-logger.error("This is an ERROR message.")  # This will appear
-logger.critical("This is a CRITICAL message.")  # This will appear
+mylogger.inspect() # Example Output: "Logging level: INFO, Handlers: ['stdout'], Format: '[{levelname}] {message}'"
 ```
 
 _For more examples, please refer to the [Documentation](https://example.com)_
+
+## Roadmap
+
+### Phase 1: Core Improvements (MVP)  
+- [ ] Simplified Configuration  
+  - [ ] Provide a single function to configure logging with sensible defaults  
+  - [ ] Support YAML/JSON-based configuration for easy setup  
+  - [ ] Allow runtime modification of logging configuration  
+
+- [ ] Context-Aware Logging  
+  - [ ] Support automatic capturing of request IDs, user sessions, and thread info  
+  - [ ] Integrate `ContextVars` for tracking context across async tasks  
+  - [ ] Provide a built-in decorator for injecting contextual information into logs  
+
+- [ ] Pythonic API Design  
+  - [ ] Replace Java-style hierarchical loggers with a simple, function-based API  
+  - [ ] Minimize the need for class-based handlers  
+  - [ ] Provide a lightweight, fluent API for structured logging  
+
+- [ ] Better Default Behaviors  
+  - [ ] Ensure multiple modules don’t interfere with each other's log settings  
+  - [ ] Provide a simple way to log to multiple destinations (stdout, stderr, file)  
+  - [ ] Implement auto-detection of environment (dev, test, prod) for smarter defaults  
+
+---
+
+### Phase 2: Enhanced Functionality  
+- [ ] Flexible and Extensible Output Formats  
+  - [ ] Native support for JSON logging  
+  - [ ] Built-in formatters for text, JSON, and structured logs  
+  - [ ] Allow custom formatters with minimal boilerplate  
+
+- [ ] Pluggable Handlers & Easy Customization  
+  - [ ] Provide built-in handlers for stdout, file, and remote APIs  
+  - [ ] Support adding custom handlers without subclassing  
+  - [ ] Implement filtering options for different log levels per handler  
+
+- [ ] Better Debugging and Introspection  
+  - [ ] Add a function to inspect the current logging setup at runtime  
+  - [ ] Provide a debugging tool to validate logging output dynamically  
+  - [ ] Include a utility to display active loggers and their configurations  
+
+---
+
+### Phase 3: Advanced Features & Performance Enhancements  
+- [ ] Async & Performance Optimization  
+  - [ ] Support async logging natively  
+  - [ ] Optimize logging for minimal performance overhead  
+  - [ ] Implement batch logging to reduce I/O bottlenecks  
+
+- [ ] Secure & Modern Features  
+  - [ ] Deprecate outdated features like remote socket-based logging  
+  - [ ] Implement safeguards against log injection attacks  
+  - [ ] Allow encrypted or signed logs for sensitive data  
+
+- [ ] Auto-Configuration & Smart Defaults  
+  - [ ] Auto-detect runtime environment and apply appropriate defaults  
+  - [ ] Offer a "zero-config" mode that works out of the box  
+  - [ ] Implement lazy loading of loggers to improve startup time  
+
+---
+
+### Phase 4: Community & Ecosystem Growth  
+- [ ] Extensive Documentation & Examples  
+  - [ ] Provide clear, beginner-friendly documentation  
+  - [ ] Include real-world examples for different use cases  
+  - [ ] Create migration guides for users switching from `logging`  
+
+- [ ] Third-Party Integrations  
+  - [ ] Built-in support for cloud logging systems (AWS CloudWatch, Datadog, ELK)  
+  - [ ] Provide middleware for logging in web frameworks (FastAPI, Flask, Django)  
+  - [ ] Support integration with structured logging libraries like `structlog`  
+
+- [ ] Growing & Maintaining the Library  
+  - [ ] Gather community feedback for iterative improvements  
+  - [ ] Keep the library lightweight, fast, and maintainable  
+  - [ ] Ensure compatibility with future Python releases  
+
+See the [open issues](https://github.com/ShaanCoding/ReadME-Generator/issues) for a full list of proposed features (and known issues).
 
 ## Contributing
 

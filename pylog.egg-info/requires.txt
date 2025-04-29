@@ -1,0 +1,6 @@
+typing-extensions>=4.0.0
+
+[dev]
+pytest>=7.0
+mypy>=1.0
+flake8>=6.0
