@@ -180,9 +180,11 @@ class Logger:
         :param context: The context of the log message.
         :param lev el: The level of the log message.
         """
-        formatted_message = self.format_log_message(context, message)
-        self._options[0].write(formatted_message + '\n')  
-        self._options[0].flush()
+        
+        if level <= self._options[1]:
+            formatted_message = self.format_log_message(context, message)
+            self._options[0].write(formatted_message + '\n')
+            self._options[0].flush()
         
 class Context:
     def __init__(self, message: str, level: Levels, timestamp: datetime, function: typing.Optional[str] = None, file: typing.Optional[str] = None, line: typing.Optional[int] = None, thread_id: typing.Optional[int] = None, exception: typing.Optional[Exception] = None):
